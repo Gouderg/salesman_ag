@@ -12,11 +12,11 @@ class Graph:
         self.matrice_od = np.zeros((NB_LIEUX, NB_LIEUX))
     
     
-    def calcul_matrice_od(self):
-        pass
-
+    def calcul_distance_route(self, ordre):
+        return sum([self.matrice_od[ord(ordre[i])-65, ord(ordre[i+1])-65] for i in range(len(ordre)-1)])
     
-    def plus_proche_voisin(self):
+    def plus_proche_voisin(self, index):
+        
         plus_proche_voisin = None
 
         return plus_proche_voisin
@@ -43,8 +43,8 @@ class Graph:
 
         if not isCsv:
             for i in range(NB_LIEUX):
-                for j in range(NB_LIEUX):
-                    if i == j:
-                        continue
+                for j in range(i):
                     l = self.list_lieu[chr(ord('A') + j)]
                     self.matrice_od[i, j] = self.list_lieu[chr(ord('A') + i)].distance(l.x, l.y)
+                    self.matrice_od[j, i] = self.list_lieu[chr(ord('A') + i)].distance(l.x, l.y)
+
