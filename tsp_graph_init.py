@@ -1,4 +1,5 @@
-import Lieu
-import Graph
-import Route
-import Affichage
+from Lieu import Lieu
+from Graph import Graph
+from Route import Route
+from Affichage import Affichage
+from constante import LARGEUR, HAUTEUR, NB_LIEUX
