@@ -9,7 +9,11 @@ graph.charger_matrice_od()
 route = Route()
 route.ordre = ["A", "B", "C", "D", "A", "C"]
 
-print(graph.calcul_distance_route(route.ordre))
+print(route)
+
+print("Distance de la route: ", graph.calcul_distance_route(route.ordre))
+print("Plus proche voisin de D: ", graph.plus_proche_voisin("D"))
+
 # # Création de l'affichage.
 # app = Affichage(graph.list_lieu)
 
