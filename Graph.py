@@ -1,3 +1,4 @@
+import constante
 from constante import LARGEUR, HAUTEUR, NB_LIEUX
 from Lieu import Lieu
 
@@ -26,7 +27,7 @@ class Graph:
         
         if not isCsv:
             for i in range(NB_LIEUX):
-                self.list_lieu[chr(ord('A') + i)] = Lieu(randint(0, 800), randint(0, 800), chr(ord('A') + i))
+                self.list_lieu[chr(ord('A') + i)] = Lieu(randint(0, constante.LARGEUR), randint(0, constante.HAUTEUR), chr(ord('A') + i))
 
     def charger_matrice_od(self, isCsv=False):
 
