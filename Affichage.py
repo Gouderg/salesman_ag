@@ -27,11 +27,15 @@ class Affichage(tk.Tk):
     def draw(self, nb_iteration, best_path):
         self.infoText.set("Nombre itérations: " +str(nb_iteration)+", Meilleur chemin: "+' - '.join(best_path))
 
+    def draw_path(self,node1,node2):
+        self.canvas.create_line(node1.x, node1.y, node2.x, node2.y, arrow=tk.LAST)
+
+
 
     
     def create_nodes(self, list_lieux):
-        self.canvas.create_oval(0, 0, 15, 15)
-        self.canvas.create_oval(LARGEUR-15, HAUTEUR-15, LARGEUR, HAUTEUR)
+        #self.canvas.create_oval(0, 0, 15, 15)
+        #self.canvas.create_oval(LARGEUR-15, HAUTEUR-15, LARGEUR, HAUTEUR)
 
 
 
