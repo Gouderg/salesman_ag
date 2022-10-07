@@ -8,7 +8,8 @@ class Route:
         return self.ordre[index]
 
     def __repr__(self) -> str:
-        return 'Ordre: '+', '.join(self.ordre)
+        a = [str(i) for i in self.ordre]
+        return 'Ordre: '+', '.join(a)
     
     def __len__(self):
         return len(self.ordre)
