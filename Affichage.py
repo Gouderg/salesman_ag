@@ -35,9 +35,8 @@ class Affichage(tk.Tk):
 
 
 
-        for key in list_lieux:
-            print(list_lieux[key].x, list_lieux[key].y)
-            x, y = list_lieux[key].x, list_lieux[key].y
+        for lieu in list_lieux:
+            x, y = lieu.x, lieu.y
 
             self.canvas.create_oval(x-15, y-15, x+15, y+15)
         

@@ -7,22 +7,21 @@ graph = Graph()
 
 print(graph.matrice_od)
 route = Route()
-route.ordre = list(graph.list_lieu)
+route.ordre = [i for i in range(NB_LIEUX)]
 print(route)
-route.addValue("F")
+route.addValue(2)
 
 
 print("Distance de la route: ", graph.calcul_distance_route(route.ordre))
-print("Plus proche voisin de D: ", graph.plus_proche_voisin("D"))
+print("Plus proche voisin de D: ", graph.plus_proche_voisin(2))
 
 
-
-# # Création de l'affichage.
-# app = Affichage(graph.list_lieu)
+# Création de l'affichage.
+app = Affichage(graph.list_lieu)
 
 # Boucle de mise en service.
-# for i in range(1000):
-#     app.draw(i, ['a', 'b'])
-#     app.update()
-#     app.update_idletasks()
-#     time.sleep(0.02)
+for i in range(1000):
+    app.draw(i, ['a', 'b'])
+    app.update()
+    app.update_idletasks()
+    time.sleep(0.02)
