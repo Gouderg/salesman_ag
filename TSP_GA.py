@@ -1,6 +1,5 @@
 from tsp_graph_init import *
 
-
 class TSP_GA:
     def __init__(self):
         self.routes = []
