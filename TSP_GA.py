@@ -5,7 +5,6 @@ class TSP_GA:
     def __init__(self):
         self.routes = []
 
-
     def generate_routes(self, graph):
         for j in range(NB_POPULATION):
             villes = list(graph.list_lieu)
@@ -18,8 +17,9 @@ class TSP_GA:
         print(self.routes)
 
     def calculate_fitness(self, index, graph):
-
         return 1/graph.calcul_distance_route(self.routes[index])
+
+
 
     def main(self):
         print("Launch application.")
