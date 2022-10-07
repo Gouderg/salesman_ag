@@ -3,12 +3,11 @@ import time
 
 # Création du graph.
 graph = Graph()
-graph.charger_graph()
-graph.charger_matrice_od()
 
 route = Route()
 route.ordre = ["A", "B", "C", "D", "A", "C"]
-
+print(len(route))
+print(route[2])
 print(route)
 
 print("Distance de la route: ", graph.calcul_distance_route(route.ordre))

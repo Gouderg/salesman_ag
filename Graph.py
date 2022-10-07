@@ -7,10 +7,13 @@ import numpy as np
 class Graph:
     
     def __init__(self):
+        
+        # Déclation des variables.
         self.list_lieu = {}
-
         self.matrice_od = np.zeros((NB_LIEUX, NB_LIEUX))
     
+        self.charger_graph()
+        self.charger_matrice_od()
     
     def calcul_distance_route(self, ordre):
         return sum([self.matrice_od[ord(ordre[i])-65, ord(ordre[i+1])-65] for i in range(len(ordre)-1)])
@@ -24,10 +27,6 @@ class Graph:
         if not isCsv:
             for i in range(NB_LIEUX):
                 self.list_lieu[chr(ord('A') + i)] = Lieu(randint(0, 800), randint(0, 800), chr(ord('A') + i))
-
-        else:
-            pass
-
 
     def charger_matrice_od(self, isCsv=False):
 
