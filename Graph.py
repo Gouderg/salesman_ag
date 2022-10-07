@@ -17,10 +17,25 @@ class Graph:
     
     def calcul_distance_route(self, ordre):
         return sum([self.matrice_od[ord(ordre[i])-65, ord(ordre[i+1])-65] for i in range(len(ordre)-1)])
+
     
     # Trouve le plus proche voisin en utilisant la transposé de la matrice pour permettre de travailler sur la ligne.
-    def plus_proche_voisin(self, index):
-        return chr(np.where(self.matrice_od.T[ord(index)-65] == sorted(self.matrice_od.T[ord(index)-65])[1])[0][0] + 65)
+    def plus_proche_voisin(self, index, k_plus_proche = 0):
+
+        # On récupère la ligne de la transposé et on la trie.
+        trans = np.array(sorted(self.matrice_od.T[ord(index)-65]))
+
+        # On enlève temporairement les valeurs négatives.
+        without_negative = trans[len(trans) - sum(1 * (trans > 0)):]
+
+        # On récupère la valeur la plus petite.
+        val = without_negative[0]
+   
+        # On cherche l'indice de la valeur et on la convertie en lettre.
+        ind = chr(np.where(self.matrice_od.T[ord(index)-65] == val)[0][0] + 65)
+        
+        return ind
+
     
     def charger_graph(self, isCsv=False):
         

@@ -2,6 +2,7 @@ class Route:
 
     def __init__(self):
         self.ordre = []
+        self.fitness = 0
 
     def __getitem__(self, index):
         return self.ordre[index]
