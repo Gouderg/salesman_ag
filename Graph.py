@@ -1,7 +1,7 @@
 from constante import LARGEUR, HAUTEUR, NB_LIEUX
 from Lieu import Lieu
 
-from random import randint
+import random
 import numpy as np
 
 class Graph:
@@ -33,15 +33,16 @@ class Graph:
    
         # On cherche l'indice de la valeur et on la convertie en lettre.
         ind = chr(np.where(self.matrice_od.T[ord(index)-65] == val)[0][0] + 65)
-        
+
         return ind
 
     
     def charger_graph(self, isCsv=False):
         
         if not isCsv:
+            random.seed(1)
             for i in range(NB_LIEUX):
-                self.list_lieu[chr(ord('A') + i)] = Lieu(randint(0, LARGEUR), randint(0, HAUTEUR), chr(ord('A') + i))
+                self.list_lieu[chr(ord('A') + i)] = Lieu(random.randint(0, LARGEUR), random.randint(0, HAUTEUR), chr(ord('A') + i))
 
     def charger_matrice_od(self, isCsv=False):
 
