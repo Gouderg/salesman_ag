@@ -8,6 +8,7 @@ route = Route()
 route.ordre = ["A", "B", "C", "D", "A", "C"]
 print(len(route))
 print(route[2])
+route.addValue("F")
 print(route)
 
 print("Distance de la route: ", graph.calcul_distance_route(route.ordre))
