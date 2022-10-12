@@ -8,8 +8,9 @@ import multiprocessing as mp
 import numpy as np
 from time import sleep
 from queue import Empty
+import pandas as pd
 
-NB_ESSAI = 30
+NB_ESSAI = 10
 
 class Performance:
 
@@ -24,24 +25,31 @@ class Performance:
         self.all_dist = []
         self.all_routes = []
 
-    def find_best_path(self) -> None:
-        print("On essaie de trouver le chemin exact le plus court (Lieux <= 10): ")
-        if NB_LIEUX > 10: return # Too many possibilities.
+    def find_best_path(self, csv_opt = None) -> None:
+        if csv_opt is None:
+            print("On essaie de trouver le chemin exact le plus court (Lieux <= 10): ")
+            if self.graph.nb_lieu > 10: return -1 # Too many possibilities.
 
-        # Trouver la solution la plus optimisé.
-        r = Route([i for i in range(NB_LIEUX)])
-        d = self.graph.calcul_distance_route(r)
+            # Trouver la solution la plus optimisé.
+            r = Route([i for i in range(self.graph.nb_lieu)])
+            d = self.graph.calcul_distance_route(r)
 
-        # Fonction factorielle.
-        factorielle = lambda n: n * factorielle(n-1) if n != 0 else 1
+            # Fonction factorielle.
+            factorielle = lambda n: n * factorielle(n-1) if n != 0 else 1
 
-        for elt in tqdm(itertools.permutations(range(NB_LIEUX), NB_LIEUX), total=factorielle(NB_LIEUX)):
-            d_temp = self.graph.calcul_distance_route(Route(elt))
-            if d_temp < d:
-                r = Route(elt)
-                d = d_temp
+            for elt in tqdm(itertools.permutations(range(self.graph.nb_lieu), self.graph.nb_lieu), total=factorielle(self.graph.nb_lieu)):
+                d_temp = self.graph.calcul_distance_route(Route(elt))
+                if d_temp < d:
+                    r = Route(elt)
+                    d = d_temp
+            
+            self.best_move = r
         
-        self.best_move = r
+        else:
+            print("On charge le fichier csv qui contient la meilleure route: ")
+            df = pd.read_csv(csv_opt, sep=",", header=None)
+            self.best_move = Route([elt-1 for elt in list(df[0])])
+
     
     # Méthode qui calcule l'erreur.
     def rmse(self, all_route, all_dist):
@@ -64,21 +72,21 @@ class Performance:
         print("RMSE1: ",round(rmse1, 2),", RMSE2: ",round(rmse2, 2),", Min: ",min(all_dist),", Max: ",max(all_dist))
         print("Moyenne: ", mean,", Q1: ", q1, ", Q3: ", q3, ", Ecart-type: ", round(ecart_type, 2))
 
+# Produce Work.
 def producer(queue, p):
     print("\nLa meilleure route est ",p.best_move," avec une distance de ", p.best_distance,".\n")
 
     print("On réalise une acquisition de", NB_ESSAI,"itérations.")
     print("Les paramètres sont:")
     print("- Population:",NB_POPULATION)
-    print("- Nombre de lieux:", NB_LIEUX)
+    print("- Nombre de lieux:", p.graph.nb_lieu)
     print("- Nombre d'itérations:", NB_ITERATION)
     print(flush=True)
 
     for i in range(NB_ESSAI):
         queue.put(i)
 
-    
-
+# Consume Work.
 def consumer(queue, p):
 
     while True:
@@ -105,11 +113,19 @@ if __name__ == "__main__":
     # Show the number of processor.
     print("Nombre de CPU:", mp.cpu_count(), ", le programme tourne sur", mp.cpu_count() - 2,"cpus")
 
+    switch = True
+    # Name for csv_file, name for csv_best_move.
+    csv_file = "csv/graph_20.csv" if switch else None
+    csv_matrice_od = None
+    csv_opt = None
+    # csv_opt = "csv/bays29.opt.tour.csv" if switch else None
+    
+
     # Init Performance object.
-    g = Graph()
+    g = Graph(csv_file, csv_matrice_od)
     p = Performance(g)
-    p.find_best_path()
-    p.best_distance = g.calcul_distance_route(p.best_move)
+    if p.find_best_path(csv_opt) != -1:
+        p.best_distance = g.calcul_distance_route(p.best_move)
     
     manager = mp.Manager()
     all_route = manager.list()

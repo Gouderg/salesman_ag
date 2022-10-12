@@ -32,3 +32,7 @@ https://tel.archives-ouvertes.fr/tel-00126292/document
 # Seed 1
 
 Meilleur route => 3970.0 "Ordre: 8, 6, 0, 9, 7, 5, 4, 3, 2, 1"
+
+
+graph_20 => 2815.
+graph_200 => 

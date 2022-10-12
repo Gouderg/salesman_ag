@@ -10,16 +10,16 @@ class TSP_GA:
     def generation_population(self, graph) -> None:
         
         # Initialisation de la première personne.
-        best_first_individu = Route([i for i in range(NB_LIEUX)])
+        best_first_individu = Route([i for i in range(graph.nb_lieu)])
 
         # On itère sur chaque pour trouver la meilleure route pour commencer.
-        for i in range(NB_LIEUX):
+        for i in range(graph.nb_lieu):
             idx = 0
-            tab, individu = [0 for j in range(NB_LIEUX)], [0 for j in range(NB_LIEUX)]
+            tab, individu = [0 for j in range(graph.nb_lieu)], [0 for j in range(graph.nb_lieu)]
             
-            while idx < NB_LIEUX:
+            while idx < graph.nb_lieu:
 
-                tab = [graph.matrice_od[i, k] for k in range(0, NB_LIEUX)]
+                tab = [graph.matrice_od[i, k] for k in range(0, graph.nb_lieu)]
                 
                 for k in range(0, idx):
                     tab[individu[k]] = -1
@@ -40,14 +40,14 @@ class TSP_GA:
         # Génération du reste de la population à partir de la première personne.
         cpt = 0
         while cpt < NB_POPULATION - 1:
-            new_child = self.mutation_inverse(self.routes[0])
+            new_child = self.mutation_inverse(graph, self.routes[0])
             if new_child not in self.routes:
                 self.routes.append(new_child)
                 cpt += 1
 
-    def mutation_inverse(self, route) -> Route:
+    def mutation_inverse(self, graph, route) -> Route:
         cp = Route(route.ordre.copy())
-        a, b = np.random.randint(0, NB_LIEUX, 2)
+        a, b = np.random.randint(0, graph.nb_lieu, 2)
         cp[a], cp[b] = cp[b], cp[a]        
         return cp
 
@@ -55,16 +55,16 @@ class TSP_GA:
         a = [1/graph.calcul_distance_route(f) for f in self.routes]
         self.fitness = [a[i]/sum(a) for i in range(len(a))]
 
-    def croisement_recombinaison_arc(self, papa, maman) -> Route:
+    def croisement_recombinaison_arc(self, graph, papa, maman) -> Route:
 
         # Création du tableau de voisinage.
         tableau_voisinage = {}
-        for i in range(NB_LIEUX):
+        for i in range(graph.nb_lieu):
             a, b = papa.ordre.index(i), maman.ordre.index(i)
-            tableau_voisinage[i] = list(set([papa[(a-1)%NB_LIEUX], papa[(a+1)%NB_LIEUX], maman[(b-1)%NB_LIEUX], maman[(b+1)%NB_LIEUX]]))
+            tableau_voisinage[i] = list(set([papa[(a-1)%graph.nb_lieu], papa[(a+1)%graph.nb_lieu], maman[(b-1)%graph.nb_lieu], maman[(b+1)%graph.nb_lieu]]))
 
         # On crée un tableau avec toutes les valeurs
-        choix = [i for i in range(NB_LIEUX)]
+        choix = [i for i in range(graph.nb_lieu)]
 
         # On cherche la première valeur.
         pos = random.choice(choix)
@@ -74,7 +74,7 @@ class TSP_GA:
         bebe.ordre.append(pos)
         choix.remove(pos)
 
-        while len(bebe) < NB_LIEUX:
+        while len(bebe) < graph.nb_lieu:
 
             # On met à jour le tableau de voisinage.
             for key in tableau_voisinage:
@@ -112,12 +112,12 @@ class TSP_GA:
             papa, maman = random.choices(self.routes, weights=self.fitness, k=2)
              
             # On effectue le croisement des gènes.
-            bebe = self.croisement_recombinaison_arc(papa, maman)
+            bebe = self.croisement_recombinaison_arc(graph, papa, maman)
 
 
             # On effectue la mutation avec une certaine probabilité.
             if random.choices([True, False], weights=[0.9, 0.1]):
-                bebe = self.mutation_inverse(bebe)
+                bebe = self.mutation_inverse(graph, bebe)
 
             # On gère le cas où on ne trouve plus de nouvel enfant.
             if bebe not in self.enfants:
@@ -156,20 +156,27 @@ class TSP_GA:
             # Reproduction.
             if self.reproduction(graph) == -1: break
 
-            # Prération pour la prochaine itération.
+            # Préparation pour la prochaine itération.
             self.reset()
 
             # Meilleur coup de l'itération.
             d, r = self.find_best_move(graph)
 
             # Update de l'affichage graphique.
-
+        print(self.routes)
         return r, d
 
 if __name__ == "__main__":
-    g = Graph()
+    csv_file = "csv/liste_coordonnees_final.csv"
+    csv_matrice_od = "csv/matrice_od_a_plat_m.csv"
+    # csv_opt = "csv/a280.opt.tour.csv"
+    csv_opt = None
+    
 
+    # Init Performance object.
+    g = Graph(csv_file, csv_matrice_od)
     algo = TSP_GA()
+
     print(algo.main(g))
 
 

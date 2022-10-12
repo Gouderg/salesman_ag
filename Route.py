@@ -12,7 +12,7 @@ class Route:
 
     def __repr__(self) -> str:
         a = [str(elt) for elt in self.ordre]
-        return '"Ordre: '+', '.join(a) + '"'
+        return '"Ordre: '+', '.join(a) + ", "+ str(a[0])+ '"'
     
     def __len__(self) -> int:
         return len(self.ordre)

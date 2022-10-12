@@ -7,4 +7,4 @@ class Lieu:
         self.y = y
 
     def distance(self, x2, y2) -> int:
-        return int(sqrt((self.x - self.y)**2 + (x2 - y2)**2))
+        return sqrt((self.x - x2)**2 + (self.y - y2)**2)

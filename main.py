@@ -1,4 +1,3 @@
-from TSP_GA import TSP_GA
 from tsp_graph_init import *
 import time
 import numpy as np
@@ -6,14 +5,6 @@ from Performance import Performance
 
 # Création du graph.
 graph = Graph()
-
-tsp = TSP_GA()
-
-perf = Performance()
-perf.rmse(graph)
-
-# tsp.generation_population(graph)
-
 
 
 # tsp.croisement_recombinaison_arc(papa, maman)
