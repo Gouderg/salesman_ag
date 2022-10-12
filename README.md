@@ -18,12 +18,16 @@ https://tel.archives-ouvertes.fr/tel-00126292/document
 
 # Truc à essayer
 
-* [ ] Taille de population de 2 * V ou 8 * V où V est le nombre de ville
+* [X] Taille de population de 2 * V ou 8 * V où V est le nombre de ville
 * [X] Génération de la population avec une méthode heuristique
-* [ ] Méthode de sélection basé sur la roulette.
-* [ ] Opérateur de croisement edrx avec une probabilité de 1.
+* [X] Méthode de sélection basé sur la roulette.
+* [X] Opérateur de croisement edrx avec une probabilité de 1.
 * [X] Opérateur de mutation im avec Pm = 0.9
-* Méthode d'insertion élististe.
+* [X] Méthode d'insertion élististe.
+
+* [ ] Ajouter la gestion de CSV
+* [ ] Ajouter l'interface graphique
+* [ ] Faire un main de qualité
 
 # Seed 1
 
