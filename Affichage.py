@@ -1,6 +1,7 @@
 from constante import LARGEUR, HAUTEUR, NB_LIEUX
-
+import Graph as Graph
 import tkinter as tk
+
 
 # https://stackoverflow.com/questions/29158220/tkinter-understanding-mainloop
 class Affichage(tk.Tk):
@@ -14,6 +15,12 @@ class Affichage(tk.Tk):
         self.canvas.pack()
 
         self.present_paths = []
+
+        self.button_matrix = tk.Button(text="Matrix OD", command=self.display_matrix)
+        self.button_best_routes = tk.Button(text="Display Best routes")
+        self.button_matrix.pack(side=tk.BOTTOM)
+        self.button_best_routes.pack(side=tk.BOTTOM)
+
 
         self.infoText = tk.StringVar()
 
@@ -56,7 +63,22 @@ class Affichage(tk.Tk):
 
             self.canvas.create_oval(x-15, y-15, x+15, y+15)
 
+    def display_matrix(self):
+        g = Graph.Graph()
+        matrix = g.matrice_od
+        new = tk.Toplevel(self)
+        new.title("Matrix OD")
 
+        frame = tk.Frame(new)
+
+
+        for i in range(NB_LIEUX):
+            for j in range(NB_LIEUX):
+                text = round(matrix[i][j], 2)
+                tk.Label(frame, text=text).grid(row=i, column=j)
+
+        frame.pack(expand=True)
+        tk.mainloop()
 
     def stop(self, event):
         # self.withdraw()
