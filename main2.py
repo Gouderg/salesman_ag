@@ -10,14 +10,17 @@ def takeDistance(element):
 def main():
     best_routes = []
 
-    graph = Graph()
+    graph = Graph("csv/graph_20.csv")
     algo = TSP_GA()
     algo.generation_population(graph)
 
 
     app = Affichage(graph.list_lieu)
 
-    for i in range(1000):
+    for i in range(NB_ITERATION):
+        
+        app.reset_paths()
+
 
         # Reproduction.
         if algo.reproduction(graph) == -1: break
@@ -38,12 +41,12 @@ def main():
                     best_routes.pop(0)
 
         # Update de l'affichage graphique.
-        for j in range(NB_LIEUX-1):
+        for j in range(graph.nb_lieu-1):
             app.draw_path(graph.list_lieu[r[j]], graph.list_lieu[r[j+1]])
             app.draw_path(graph.list_lieu[r[len(r)-1]], graph.list_lieu[r[0]])
 
         for k in range(len(best_routes)):
-            for l in range(NB_LIEUX-1):
+            for l in range(graph.nb_lieu-1):
                 app.draw_path_color(graph.list_lieu[best_routes[k][1][l]], graph.list_lieu[best_routes[k][1][l+1]])
 
         #print(i, d, r)
@@ -53,7 +56,6 @@ def main():
         app.update()
         app.update_idletasks()
 
-        app.reset_paths()
 
 
 if __name__ == "__main__":

@@ -52,13 +52,18 @@ class TSP_GA:
         return cp
 
     def heuristique_2_opt(self, graph, route) -> Route:
-        cp = Route(route.ordre.copy())
-        am = True
-        while am:
-            am = False
-            
 
-        return cp
+        new_route = Route([])
+
+        for i in range(1, len(route.ordre)-2):
+            for j in range(i+1, len(route.ordre)):
+                new_route.ordre = route[0:i] + route[j:-len(route)+i-1:-1] + route[j+1:len(route)]
+                new_distance = graph.calcul_distance_route(new_route)
+
+                if new_distance < graph.calcul_distance_route(route):
+                    route.ordre = new_route.ordre.copy()
+
+        return route
 
     def calculate_fitness(self, graph) -> None:
         a = [1/graph.calcul_distance_route(f) for f in self.routes]
@@ -125,9 +130,10 @@ class TSP_GA:
 
 
             # On effectue la mutation avec une certaine probabilité.
-            for _ in range(graph.nb_lieu // 10 + 1):
-                if random.choices([True, False], weights=[0.9, 0.1]):
-                    bebe = self.mutation_inverse(graph, bebe)
+            if random.choices([True, False], weights=[0.9, 0.1]):
+                # bebe = self.mutation_inverse(graph, bebe)
+                bebe = self.heuristique_2_opt(graph, bebe)
+
 
             # On gère le cas où on ne trouve plus de nouvel enfant.
             if bebe not in self.enfants:
@@ -179,10 +185,12 @@ class TSP_GA:
         return r, d
 
 if __name__ == "__main__":
-    csv_file = "csv/liste_coordonnees_final.csv"
+    csv_file = "csv/graph_20.csv"
     csv_matrice_od = "csv/matrice_od_a_plat_m.csv"
     # csv_opt = "csv/a280.opt.tour.csv"
     csv_opt = None
+    # csv_file = None
+    csv_matrice_od = None
     
 
     # Init Performance object.

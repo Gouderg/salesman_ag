@@ -1,12 +1,18 @@
 from tsp_graph_init import *
 import time
 import numpy as np
-from Performance import Performance
+
 
 # Création du graph.
 graph = Graph()
 
-
+new_route = Route([])
+route = Route([i for i in range(10)])
+print(route)
+i = 2
+j = 4
+new_route.ordre = route[0:i] + route[j:-len(route)+i-1:-1] + route[j+1:len(route)]
+print(new_route)
 # tsp.croisement_recombinaison_arc(papa, maman)
 
 # print(d, r)
