@@ -51,6 +51,15 @@ class TSP_GA:
         cp[a], cp[b] = cp[b], cp[a]        
         return cp
 
+    def heuristique_2_opt(self, graph, route) -> Route:
+        cp = Route(route.ordre.copy())
+        am = True
+        while am:
+            am = False
+            
+
+        return cp
+
     def calculate_fitness(self, graph) -> None:
         a = [1/graph.calcul_distance_route(f) for f in self.routes]
         self.fitness = [a[i]/sum(a) for i in range(len(a))]
@@ -106,7 +115,7 @@ class TSP_GA:
         self.calculate_fitness(graph)
 
         # On génère 70 % d'enfants et le reste de la population sera composés de parents.
-        while len(self.enfants) != NB_POPULATION - 1:
+        while len(self.enfants) != int(NB_POPULATION * PROP_ENFANTS):
 
             # On choisit 2 parents parmi les routes.
             papa, maman = random.choices(self.routes, weights=self.fitness, k=2)
@@ -116,8 +125,9 @@ class TSP_GA:
 
 
             # On effectue la mutation avec une certaine probabilité.
-            if random.choices([True, False], weights=[0.9, 0.1]):
-                bebe = self.mutation_inverse(graph, bebe)
+            for _ in range(graph.nb_lieu // 10 + 1):
+                if random.choices([True, False], weights=[0.9, 0.1]):
+                    bebe = self.mutation_inverse(graph, bebe)
 
             # On gère le cas où on ne trouve plus de nouvel enfant.
             if bebe not in self.enfants:
@@ -130,10 +140,12 @@ class TSP_GA:
                 print("Impossible de trouver un nouvel enfant.")
                 return -1
         
-        self.routes = self.enfants + [self.routes[self.fitness.index(max(self.fitness))]]
+        self.parents = sorted(zip(self.fitness, self.routes))
+        self.routes = self.enfants + [self.parents[i][1] for i in range(len(self.parents)-1, len(self.parents) - 1 -int(NB_POPULATION * PROP_PARENTS), -1)]
+
     
     def reset(self) -> None:
-        self.enfants, self.parents, self.fitness = [], None, None
+        self.enfants, self.parents, self.fitness = [], [], []
 
     def find_best_move(self, graph) -> tuple:
         best_move = 0
@@ -163,7 +175,7 @@ class TSP_GA:
             d, r = self.find_best_move(graph)
 
             # Update de l'affichage graphique.
-        print(self.routes)
+
         return r, d
 
 if __name__ == "__main__":

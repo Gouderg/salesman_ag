@@ -28,11 +28,12 @@ https://tel.archives-ouvertes.fr/tel-00126292/document
 * [ ] Ajouter la gestion de CSV
 * [ ] Ajouter l'interface graphique
 * [ ] Faire un main de qualité
+* [ ] Ajouter 2-opt
 
 # Seed 1
 
 Meilleur route => 3970.0 "Ordre: 8, 6, 0, 9, 7, 5, 4, 3, 2, 1"
 
-
+5 => 1436
 graph_20 => 2815.
-graph_200 => 
+graph_200 => 7000
