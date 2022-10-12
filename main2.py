@@ -38,13 +38,13 @@ def main():
                     best_routes.pop(0)
 
         # Update de l'affichage graphique.
-        for j in range(9):
+        for j in range(NB_LIEUX-1):
             app.draw_path(graph.list_lieu[r[j]], graph.list_lieu[r[j+1]])
+            app.draw_path(graph.list_lieu[r[len(r)-1]], graph.list_lieu[r[0]])
 
         for k in range(len(best_routes)):
-            for l in range(9):
+            for l in range(NB_LIEUX-1):
                 app.draw_path_color(graph.list_lieu[best_routes[k][1][l]], graph.list_lieu[best_routes[k][1][l+1]])
-
 
         #print(i, d, r)
         app.draw(i, best_routes[len(best_routes)-1])
