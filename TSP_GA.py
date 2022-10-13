@@ -197,10 +197,10 @@ if __name__ == "__main__":
     csv_file = "csv/graph_20.csv"
     csv_matrice_od = None
 
+
     graph = Graph(csv_file, csv_matrice_od)
     algo = TSP_GA()
     algo.generation_population(graph)
-
 
     app = Affichage(graph)
 
