@@ -2,6 +2,7 @@ from tsp_graph_init import *
 
 import numpy as np
 import random
+import time
 
 class TSP_GA:
     def __init__(self) -> None:
@@ -12,32 +13,27 @@ class TSP_GA:
     def generation_population(self, graph) -> None:
         
         # Initialisation de la première personne.
-        best_first_individu = Route([i for i in range(graph.nb_lieu)])
 
         # On itère sur chaque pour trouver la meilleure route pour commencer.
-        for i in range(graph.nb_lieu):
-            idx = 0
-            tab, individu = [0 for j in range(graph.nb_lieu)], [0 for j in range(graph.nb_lieu)]
+        idx, i = 0, 0
+        tab, individu = [0 for j in range(graph.nb_lieu)], [0 for j in range(graph.nb_lieu)]
+        
+        while idx < graph.nb_lieu:
+
+            tab = [graph.matrice_od[i, k] for k in range(0, graph.nb_lieu)]
             
-            while idx < graph.nb_lieu:
+            for k in range(0, idx):
+                tab[individu[k]] = -1
 
-                tab = [graph.matrice_od[i, k] for k in range(0, graph.nb_lieu)]
-                
-                for k in range(0, idx):
-                    tab[individu[k]] = -1
+            save_i, save_v = 100000, 100000
+            for index, value in enumerate(tab):
+                if value != -1 and value < save_v:
+                    save_i, save_v = index, value
 
-                save_i, save_v = 100000, 100000
-                for index, value in enumerate(tab):
-                    if value != -1 and value < save_v:
-                        save_i, save_v = index, value
-
-                individu[idx] = save_i
-                idx += 1
+            individu[idx] = save_i
+            idx += 1
             
-            if graph.calcul_distance_route(individu) < graph.calcul_distance_route(best_first_individu):
-                best_first_individu = individu
-
-        self.routes.append(Route(best_first_individu))
+        self.routes.append(Route(individu))
 
         # Génération du reste de la population à partir de la première personne.
         cpt = 0
@@ -47,30 +43,37 @@ class TSP_GA:
                 self.routes.append(new_child)
                 cpt += 1
 
+    # Inverse l'ordre de 2 lieu dans une route de manière aléatoire.
     def mutation_inverse(self, graph, route) -> Route:
         cp = Route(route.ordre.copy())
         a, b = np.random.randint(0, graph.nb_lieu, 2)
         cp[a], cp[b] = cp[b], cp[a]        
         return cp
 
+    # Algorithme de recherche local qui intervertit une portion de la route si cela améliore le coût.
     def heuristique_2_opt(self, graph, route) -> Route:
 
         new_route = Route([])
-
+        # On parcourt on bornant i afin de avoir des erreurs d'index.
         for i in range(1, len(route.ordre)-2):
             for j in range(i+1, len(route.ordre)):
+                # On inverse la portion de route.
                 new_route.ordre = route[0:i] + route[j:-len(route)+i-1:-1] + route[j+1:len(route)]
                 new_distance = graph.calcul_distance_route(new_route)
 
+                # Si la nouvelle route à une plus petite distance, on la garde.
                 if new_distance < graph.calcul_distance_route(route):
                     route.ordre = new_route.ordre.copy()
 
         return route
 
+    # Calcul un score de d'adaptabilité permettant de classer les meilleurs routes.
     def calculate_fitness(self, graph) -> None:
         a = [1/graph.calcul_distance_route(f) for f in self.routes]
         self.fitness = [a[i]/sum(a) for i in range(len(a))]
 
+
+    # On croise l'enfant en partant d'une ville et en recomposant l'enfant à partir des voisins de la ville des 2 parents.
     def croisement_recombinaison_arc(self, graph, papa, maman) -> Route:
 
         # Création du tableau de voisinage.
@@ -90,6 +93,7 @@ class TSP_GA:
         bebe.ordre.append(pos)
         choix.remove(pos)
 
+        # Tant que le bebe n'a pas de route optimale.
         while len(bebe) < graph.nb_lieu:
 
             # On met à jour le tableau de voisinage.
@@ -113,10 +117,8 @@ class TSP_GA:
 
         return bebe
 
-
+    # Gère la reproduction de la population
     def reproduction(self, graph) -> None:
-        # Compteur pour comptabiliser les erreurs (Sortir s'il n'y a pu de possibilités).
-        erreur = 0
 
         # On génère les scores d'adaptabilités de chaque individu de la population.
         self.calculate_fitness(graph)
@@ -140,32 +142,30 @@ class TSP_GA:
             # On gère le cas où on ne trouve plus de nouvel enfant.
             if bebe not in self.enfants:
                 self.enfants.append(bebe)
-                erreur = 0
-            else:
-                erreur += 1
 
-            if erreur == 5:
-                print("Impossible de trouver un nouvel enfant.")
-                return -1
-        
+        # On trie les parents et on garde les meilleurs sont un pourcentage.
         self.parents = sorted(zip(self.fitness, self.routes))
         self.routes = self.enfants + [self.parents[i][1] for i in range(len(self.parents)-1, len(self.parents) - 1 -int(NB_POPULATION * PROP_PARENTS), -1)]
 
-    
+    # On vide les différentes variables pour ne pas avoir de surprise.
     def reset(self) -> None:
         self.enfants, self.parents, self.fitness = [], [], []
 
+    # Trouve les n meilleurs routes.
     def find_n_best_move(self, graph, n = 1) -> list:
-
+        
+        # Mise à jour des coordonnées de distance.
         self.calculate_fitness(graph)
 
+
         best_routes = []
-        temp = sorted(zip(self.fitness, self.routes), reverse=True)[0:n]
+        temp = sorted(zip(self.fitness, self.routes), reverse=True)[0:min(n, graph.nb_lieu)] # On prévoit que l'utilisateur demande plus de route optimal que de route dans la population.
         for _, route in temp:
             best_routes.append((route, graph.calcul_distance_route(route)))
 
         return best_routes if len(best_routes) != 1 else best_routes[0]
 
+    # Corps du programme sans affichage.
     def main(self, graph) -> tuple:
         d, r = None, None
 
@@ -176,7 +176,7 @@ class TSP_GA:
         for _ in range(NB_ITERATION):
 
             # Reproduction.
-            if self.reproduction(graph) == -1: break
+            self.reproduction(graph)
 
             # Meilleur coup de l'itération.
             r, d = self.find_n_best_move(graph)
@@ -193,9 +193,11 @@ if __name__ == "__main__":
 
     csv_file = "csv/liste_coordonnees_final.csv"
     csv_matrice_od = "csv/matrice_od_a_plat_m.csv"
+    
+    csv_file = "csv/graph_20.csv"
+    csv_matrice_od = None
 
-
-    graph = Graph("csv/berlin52.csv")
+    graph = Graph(csv_file, csv_matrice_od)
     algo = TSP_GA()
     algo.generation_population(graph)
 
@@ -207,7 +209,7 @@ if __name__ == "__main__":
         app.reset_paths()
 
         # Reproduction.
-        if algo.reproduction(graph) == -1: break
+        algo.reproduction(graph)
 
         # N Meilleur coup de l'itération.
         best_routes= algo.find_n_best_move(graph, N_ROUTE_AFFICHE)
@@ -238,6 +240,7 @@ if __name__ == "__main__":
 
     # Le programme à fini mais l'utilisateur veut continuer à regarder le graphe.
     while not app.should_stop:
+        time.sleep(0.5)
         app.update()
         app.update_idletasks()
 

@@ -115,10 +115,11 @@ if __name__ == "__main__":
 
     switch = True
     # Name for csv_file, name for csv_best_move.
-    csv_file = "csv/berlin52.csv" if switch else None
+    csv_file = "csv/graph_20.csv" if switch else None
     csv_matrice_od = None
+    csv_opt = None
 
-    csv_opt = "csv/berlin52.opt.tour.csv" if switch else None
+    # csv_opt = "csv/berlin52.opt.tour.csv" if switch else None
     
 
     # Init Performance object.

@@ -6,13 +6,6 @@ M2 Project - Solving the travelling salesman using a genetic algorithm
 
 ## Crossover
 
-Crossover 1 point => On met 1 point qui marque la séparation entre les 2 parents
-Crossover 2 point => Pareil avec 2 points
-Crossover Uniforme => Génère un masque qui donne la même proportion entre les parents
-
-=> Pas Optimal pour TSP
-
-https://tel.archives-ouvertes.fr/tel-00126292/document
 
 
 
@@ -25,10 +18,10 @@ https://tel.archives-ouvertes.fr/tel-00126292/document
 * [X] Opérateur de mutation im avec Pm = 0.9
 * [X] Méthode d'insertion élististe.
 
-* [ ] Ajouter la gestion de CSV
-* [ ] Ajouter l'interface graphique
-* [ ] Faire un main de qualité
-* [ ] Ajouter 2-opt
+* [X] Ajouter la gestion de CSV
+* [X] Ajouter l'interface graphique
+* [X] Faire un main de qualité
+* [X] Ajouter 2-opt
 
 # Seed 1
 
@@ -37,3 +30,7 @@ Meilleur route => 3970.0 "Ordre: 8, 6, 0, 9, 7, 5, 4, 3, 2, 1"
 5 => 1436
 graph_20 => 2815.
 graph_200 => 7000
+
+# Ressource utilisée
+
+- (Variantes d’algorithmes génétiques appliquéees aux problèmes d’ordonnancement)[https://tel.archives-ouvertes.fr/tel-00126292/document]

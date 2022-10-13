@@ -17,6 +17,7 @@ class Graph:
         self.matrice_od = np.zeros((self.nb_lieu, self.nb_lieu))
         self.charger_matrice_od(csvMatrice)
     
+    # Calcul de la distance entre les différents passés en paramètres.
     def calcul_distance_route(self, ordre) -> float:
         return sum([self.matrice_od[ordre[i], ordre[i+1]] for i in range(0, self.nb_lieu-1)] + [self.matrice_od[ordre[self.nb_lieu-1], ordre[0]]])
 
@@ -38,7 +39,7 @@ class Graph:
 
         return ind
 
-    
+    # Charge soit un fichier CSV, soit il génère des nombres aléatoires.
     def charger_graph(self, csvName=None) -> None:
         
         if csvName is None:
@@ -48,18 +49,14 @@ class Graph:
         
         else:
             df = pd.read_csv(csvName, sep=",", header=None)
-            min_x, min_y, max_x, max_y = min(list(df[0])), min(list(df[1])), max(list(df[0])), max(list(df[1]))
 
             for x, y in zip(list(df[0]), list(df[1])):
-                if max_y > HAUTEUR or max_x > LARGEUR:
-                    self.list_lieu.append(Lieu((x - min_x) / (max_x - min_x) * LARGEUR, (y - min_y) / (max_y - min_y) * HAUTEUR))
-                else:
-                    self.list_lieu.append(Lieu(x, y))
+                self.list_lieu.append(Lieu(x, y))
 
             
             self.nb_lieu = len(self.list_lieu)
 
-
+    # Si un fichier csv est passé, il le charge, sinon il crée une matrice_od avec la distance euclidienne.
     def charger_matrice_od(self, csvName=None) -> None:
 
         if csvName is None:
