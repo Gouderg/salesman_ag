@@ -26,18 +26,3 @@ class Route:
         else:
             return NotImplemented
     
-    # def __gt__(self, other):
-    #     if isinstance(other, Route):
-    #         return self.distance > other.distance
-    #     else:
-    #         return NotImplemented
-    
-    # def __eq__(self, other):
-    #     if isinstance(other, Route):
-    #         a = [str(i) for i in self.ordre]
-    #         b = [str(i) for i in other.ordre]
-
-    #         return self.distance == other.distance and ''.join(a) == ''.join(b)
-    #     else:
-    #         return NotImplemented
-    

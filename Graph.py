@@ -48,9 +48,14 @@ class Graph:
         
         else:
             df = pd.read_csv(csvName, sep=",", header=None)
+            min_x, min_y, max_x, max_y = min(list(df[0])), min(list(df[1])), max(list(df[0])), max(list(df[1]))
 
             for x, y in zip(list(df[0]), list(df[1])):
-                self.list_lieu.append(Lieu(x, y))
+                if max_y > HAUTEUR or max_x > LARGEUR:
+                    self.list_lieu.append(Lieu((x - min_x) / (max_x - min_x) * LARGEUR, (y - min_y) / (max_y - min_y) * HAUTEUR))
+                else:
+                    self.list_lieu.append(Lieu(x, y))
+
             
             self.nb_lieu = len(self.list_lieu)
 

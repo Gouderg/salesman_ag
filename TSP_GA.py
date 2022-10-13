@@ -1,5 +1,7 @@
 from tsp_graph_init import *
+
 import numpy as np
+import random
 
 class TSP_GA:
     def __init__(self) -> None:
@@ -153,14 +155,16 @@ class TSP_GA:
     def reset(self) -> None:
         self.enfants, self.parents, self.fitness = [], [], []
 
-    def find_best_move(self, graph) -> tuple:
-        best_move = 0
-        r = Route([])
-        for elt in self.routes:
-            d_temp = graph.calcul_distance_route(elt)
-            if d_temp < best_move or best_move == 0:
-                best_move, r = d_temp, elt
-        return best_move, r
+    def find_n_best_move(self, graph, n = 1) -> list:
+
+        self.calculate_fitness(graph)
+
+        best_routes = []
+        temp = sorted(zip(self.fitness, self.routes), reverse=True)[0:n]
+        for _, route in temp:
+            best_routes.append((route, graph.calcul_distance_route(route)))
+
+        return best_routes if len(best_routes) != 1 else best_routes[0]
 
     def main(self, graph) -> tuple:
         d, r = None, None
@@ -169,34 +173,72 @@ class TSP_GA:
         self.generation_population(graph)
         
         # On itère un certain nombre de fois
-        for ite in range(NB_ITERATION):
+        for _ in range(NB_ITERATION):
 
             # Reproduction.
             if self.reproduction(graph) == -1: break
 
+            # Meilleur coup de l'itération.
+            r, d = self.find_n_best_move(graph)
+
             # Préparation pour la prochaine itération.
             self.reset()
 
-            # Meilleur coup de l'itération.
-            d, r = self.find_best_move(graph)
-
-            # Update de l'affichage graphique.
 
         return r, d
 
 if __name__ == "__main__":
-    csv_file = "csv/graph_20.csv"
+
+    best_routes = []
+
+    csv_file = "csv/liste_coordonnees_final.csv"
     csv_matrice_od = "csv/matrice_od_a_plat_m.csv"
-    # csv_opt = "csv/a280.opt.tour.csv"
-    csv_opt = None
-    # csv_file = None
-    csv_matrice_od = None
-    
 
-    # Init Performance object.
-    g = Graph(csv_file, csv_matrice_od)
+
+    graph = Graph("csv/berlin52.csv")
     algo = TSP_GA()
+    algo.generation_population(graph)
 
-    print(algo.main(g))
+
+    app = Affichage(graph)
+
+    for i in range(NB_ITERATION):
+        
+        app.reset_paths()
+
+        # Reproduction.
+        if algo.reproduction(graph) == -1: break
+
+        # N Meilleur coup de l'itération.
+        best_routes= algo.find_n_best_move(graph, N_ROUTE_AFFICHE)
+
+        # Prépration pour la prochaine itération.
+        algo.reset()
+
+        # Affiche des routes secondaires.
+        if app.should_show_routes:
+            for route, distance in best_routes[1:]:
+                    for j in range(graph.nb_lieu-1):
+                        app.draw_path_color(graph.list_lieu[route[j]], graph.list_lieu[route[j+1]])
+                    app.draw_path_color(graph.list_lieu[route[len(route)-1]], graph.list_lieu[route[0]])
+                
+        # Update de l'affichage graphique.
+        route, distance = best_routes[0]
+        for j in range(graph.nb_lieu-1):
+            app.draw_path(graph.list_lieu[route[j]], graph.list_lieu[route[j+1]])
+        app.draw_path(graph.list_lieu[route[len(route)-1]], graph.list_lieu[route[0]])
+        
+        app.draw_information(i, route, distance)
+
+        app.update()
+        app.update_idletasks()
+
+        # Si l'utilisateur demande à quitter.
+        if app.should_stop: break
+
+    # Le programme à fini mais l'utilisateur veut continuer à regarder le graphe.
+    while not app.should_stop:
+        app.update()
+        app.update_idletasks()
 
 

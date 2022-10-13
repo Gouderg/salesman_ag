@@ -6,7 +6,7 @@ from tqdm import tqdm
 import math
 import multiprocessing as mp
 import numpy as np
-from time import sleep
+from time import sleep, time
 from queue import Empty
 import pandas as pd
 
@@ -93,14 +93,14 @@ def consumer(queue, p):
         try:
             # Get the id of the iteration.
             id = queue.get(block=False)
-
+            start_time = time()
             algo = TSP_GA()
             route, distance = algo.main(p.graph)
 
             all_dist.append(distance)
             all_route.append(route)
 
-            print("Itération n° ",id,"\t Route: ",route,"\t Distance: ", distance, flush=True)
+            print("Itération n° ",id,"\t Route: ",route,"\t Distance: ", round(distance, 2), "\tTime: ", round(time() - start_time, 2), " sec", flush=True)
 
             queue.task_done()
         except Empty:
@@ -111,13 +111,13 @@ def consumer(queue, p):
 if __name__ == "__main__":
 
     # Show the number of processor.
-    print("Nombre de CPU:", mp.cpu_count(), ", le programme tourne sur", mp.cpu_count() - 2,"cpus")
+    print("Nombre de CPU:", mp.cpu_count(), ", le programme tourne sur", mp.cpu_count() - 2,"cpus.")
 
     switch = True
     # Name for csv_file, name for csv_best_move.
     csv_file = "csv/berlin52.csv" if switch else None
     csv_matrice_od = None
-    # csv_opt = None
+
     csv_opt = "csv/berlin52.opt.tour.csv" if switch else None
     
 
