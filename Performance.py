@@ -11,6 +11,7 @@ from queue import Empty
 import pandas as pd
 
 NB_ESSAI = 10
+all_dist, all_route = None, None
 
 class Performance:
 
@@ -74,9 +75,10 @@ class Performance:
 
 # Produce Work.
 def producer(queue, p):
-    print("\nLa meilleure route est ",p.best_move," avec une distance de ", p.best_distance,".\n")
+    if p.best_move is not None:
+        print("\nLa meilleure route est ",p.best_move," avec une distance de ", p.best_distance,".\n")
 
-    print("On réalise une acquisition de", NB_ESSAI,"itérations.")
+    print("\nOn réalise une acquisition de", NB_ESSAI,"itérations.")
     print("Les paramètres sont:")
     print("- Population:",NB_POPULATION)
     print("- Nombre de lieux:", p.graph.nb_lieu)
@@ -108,27 +110,22 @@ def consumer(queue, p):
             break
 
 
-if __name__ == "__main__":
+def main_perf(csv_name, csv_matrice, csv_opt, cpu, lieu):
+
+    nb_cpu = max(min(cpu, mp.cpu_count()), 1)
 
     # Show the number of processor.
-    print("Nombre de CPU:", mp.cpu_count(), ", le programme tourne sur", mp.cpu_count() - 2,"cpus.")
-
-    switch = True
-    # Name for csv_file, name for csv_best_move.
-    csv_file = "csv/graph_20.csv" if switch else None
-    csv_matrice_od = None
-    csv_opt = None
-
-    # csv_opt = "csv/berlin52.opt.tour.csv" if switch else None
-    
+    print("Nombre de CPU:", mp.cpu_count(), ", le programme tourne sur", nb_cpu,"cpus.")
 
     # Init Performance object.
-    g = Graph(csv_file, csv_matrice_od)
+    g = Graph(csv_name, csv_matrice, lieu)
     p = Performance(g)
     if p.find_best_path(csv_opt) != -1:
         p.best_distance = g.calcul_distance_route(p.best_move)
     
     manager = mp.Manager()
+    global all_route
+    global all_dist
     all_route = manager.list()
     all_dist = manager.list()
 
@@ -151,4 +148,3 @@ if __name__ == "__main__":
     queue.join()
 
     p.rmse(all_route, all_dist)
-

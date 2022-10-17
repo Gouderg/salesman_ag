@@ -134,7 +134,7 @@ class TSP_GA:
 
 
             # On effectue la mutation avec une certaine probabilité.
-            if random.choices([True, False], weights=[0.9, 0.1]):
+            if random.choices([True, False], weights=[0.2, 0.8])[0]:
                 # bebe = self.mutation_inverse(graph, bebe)
                 bebe = self.heuristique_2_opt(graph, bebe)
 
@@ -186,19 +186,10 @@ class TSP_GA:
 
 
         return r, d
-
-if __name__ == "__main__":
-
-    best_routes = []
-
-    csv_file = "csv/liste_coordonnees_final.csv"
-    csv_matrice_od = "csv/matrice_od_a_plat_m.csv"
     
-    csv_file = "csv/graph_20.csv"
-    csv_matrice_od = None
+def main_tsp_ga(csv_name, csv_matrice_od, nb_lieux):
 
-
-    graph = Graph(csv_file, csv_matrice_od)
+    graph = Graph(csv_name, csv_matrice_od, nb_lieux)
     algo = TSP_GA()
     algo.generation_population(graph)
 
@@ -243,5 +234,3 @@ if __name__ == "__main__":
         time.sleep(0.5)
         app.update()
         app.update_idletasks()
-
-

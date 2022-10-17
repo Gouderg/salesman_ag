@@ -7,11 +7,11 @@ import pandas as pd
 
 class Graph:
     
-    def __init__(self, csvNameLieux = None, csvMatrice = None) -> None:
+    def __init__(self, csvNameLieux = None, csvMatrice = None, nb_lieux=NB_LIEUX) -> None:
         
         # Déclation des variables.
         self.list_lieu = []
-        self.nb_lieu = NB_LIEUX
+        self.nb_lieu = nb_lieux
     
         self.charger_graph(csvNameLieux)
         self.matrice_od = np.zeros((self.nb_lieu, self.nb_lieu))
